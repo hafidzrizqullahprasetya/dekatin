@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dekat.in</title>
+<meta name="description" content="Jualan rumahan tetangga dalam 3-5 KM. Pesan langsung lewat WhatsApp, tanpa komisi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/*
+  Dekat.in MVP prototype.
+  Style: achromatic ledger, adapted for a phone catalogue.
+  Chrome holds no colour. Ink #141414 is the primary action (Pesan via WhatsApp, Tayangkan).
+  The one hue is "cabai" #B42318, and it marks only the screen's main data: distance.
+  Food tiles take flat tones from the food itself (kunyit, gula jawa, daun, cabai) so the grid
+  reads as dishes, not as cards.
+  Grid: 390 phone, 16px gutters, 2 columns of (390-16*2-12)/2 = 167px.
+*/
+:root{
+  --ground:#ffffff;
+  --sunk:#f4f4f2;
+  --line:#e7e7e4;
+  --ink:#141414;
+  --ink-2:#5b5b57;
+  --ink-3:#767672;
+  --hue:#b42318;
+  --hue-tint:#fbeceb;
+  --ok:#1f6b45;
+  --ok-tint:#e8f3ec;
+  --t-kunyit:#e9b949;
+  --t-gula:#8a5a3b;
+  --t-daun:#3f6b3a;
+  --t-cabai:#c4452f;
+  --t-santan:#efe6d6;
+  --t-teh:#5a3a22;
+  --t-ungu:#4b3b47;
+  --r:14px;
+  --r-s:10px;
+  --font:'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--sunk);color:var(--ink);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* The phone column. On desktop it stays a phone-width column on a quiet ground. */
+.app{max-width:440px;min-height:100dvh;margin:0 auto;background:var(--ground);position:relative;display:flex;flex-direction:column}
+@media (min-width:700px){
+  body{padding:32px 0}
+  .app{min-height:calc(100dvh - 64px);border-radius:24px;overflow:hidden;border:1px solid var(--line)}
+}
+.view{flex:1;display:flex;flex-direction:column}
+
+/* Top bar */
+.bar{position:sticky;top:0;z-index:5;background:var(--ground);padding:12px 16px 10px;display:flex;align-items:center;gap:12px}
+.mark{font-weight:800;font-size:20px;letter-spacing:-.03em}
+.mark b{color:var(--hue);font-weight:800}
+.bar .grow{flex:1}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;transition:background .15s}
+.icon-btn:hover{background:var(--sunk)}
+.icon-btn:active{transform:scale(.96)}
+.icon-btn svg{width:22px;height:22px}
+
+/* Location line + radius */
+.where{padding:4px 16px 0}
+.where h1{font-size:24px;line-height:1.15;letter-spacing:-.025em;font-weight:700}
+.loc{display:flex;align-items:center;gap:6px;margin-top:6px;min-height:44px}
+.loc-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 2px;font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.loc-btn svg{width:18px;height:18px;flex:none}
+.radius{display:flex;gap:8px;padding:8px 16px 4px;align-items:center}
+.radius-label{font-size:14px;color:var(--ink-2);margin-right:4px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px}
+.seg button{min-height:38px;min-width:64px;padding:0 14px;border-radius:999px;font-weight:600;font-size:15px;color:var(--ink-2);transition:background .15s,color .15s}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.count{margin-left:auto;font-size:14px;color:var(--ink-2)}
+
+/* Catalogue */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 12px;padding:12px 16px 24px}
+.credit-line{padding:0 16px 120px;font-size:13px;color:var(--ink-2)}
+.credit-line button{text-decoration:underline;text-underline-offset:2px;min-height:44px;font-size:13px;color:var(--ink-2)}
+.item{display:flex;flex-direction:column;text-align:left;border-radius:var(--r);transition:transform .15s var(--ease)}
+.item:active{transform:scale(.98)}
+.tile{aspect-ratio:1/1;border-radius:var(--r);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:12px}
+.tile .dish{font-weight:800;font-size:20px;line-height:1.02;letter-spacing:-.03em;color:#fff;max-width:100%;overflow-wrap:anywhere}
+.tile.light .dish{color:var(--ink)}
+.tile img,.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .km{position:absolute;z-index:1;top:10px;left:10px;background:#fff;color:var(--hue);font-weight:700;font-size:13px;line-height:1;padding:6px 8px;border-radius:999px}
+.meta{padding:8px 2px 0}
+.price{font-weight:700;font-size:16px}
+.pname{font-size:14px;line-height:1.35;color:var(--ink);margin-top:1px}
+.seller{font-size:13px;color:var(--ink-2);margin-top:2px}
+.ful{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.pill{font-size:12px;font-weight:600;line-height:1;padding:5px 7px;border-radius:999px;background:var(--sunk);color:var(--ink-2)}
+.pill.ok{background:var(--ok-tint);color:var(--ok)}
+
+/* Empty + permission states */
+.state{padding:40px 24px 120px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.state h2{font-size:22px;line-height:1.2;letter-spacing:-.02em}
+.state p{color:var(--ink-2);max-width:32ch}
+.state .ring{width:120px;height:120px;margin-bottom:8px}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 20px;border-radius:999px;font-weight:700;font-size:16px;transition:transform .12s var(--ease),background .15s}
+.btn:active{transform:scale(.98)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:#2b2b2b}
+.btn-soft{background:var(--sunk);color:var(--ink)}
+.btn-soft:hover{background:#ebebe8}
+.btn-block{width:100%}
+.btn svg{width:22px;height:22px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom));z-index:8;width:calc(100% - 32px);max-width:408px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;padding:6px;background:var(--ink);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.nav a,.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;border-radius:999px;color:#bdbdb8;font-size:12px;font-weight:600;text-decoration:none;transition:background .15s,color .15s}
+.nav a:hover,.nav button:hover{color:#fff}
+.nav svg{width:22px;height:22px}
+.nav [aria-current="page"]{color:#fff}
+.nav .nav-sell{flex-direction:row;gap:8px;padding:0 20px;background:#fff;color:var(--ink);font-size:15px;font-weight:700}
+.nav .nav-sell:hover{color:var(--ink);background:#ececea}
+.nav .nav-sell:active{transform:scale(.97)}
+.nav :focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media (min-width:700px){.nav{position:absolute}}
+.cred{list-style:none;margin-top:12px;font-size:14px}
+.cred li{padding:10px 0;border-top:1px solid var(--line)}
+.cred a{color:var(--ink)}
+.cred span{display:block;color:var(--ink-2);font-size:13px}
+
+/* Sheet (manual location) */
+dialog.sheet{margin:auto auto 0;width:100%;max-width:440px;border:0;border-radius:20px 20px 0 0;padding:0;background:var(--ground);color:var(--ink);max-height:86dvh}
+dialog.sheet::backdrop{background:rgba(20,20,20,.45)}
+dialog.sheet[open]{animation:up .22s var(--ease)}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.sheet-in{padding:8px 16px 24px}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:4px auto 12px}
+.sheet h2{font-size:20px;letter-spacing:-.02em}
+.sheet .sub{color:var(--ink-2);font-size:15px;margin-top:4px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 8px}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;background:var(--sunk);font-weight:600;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+.opts{list-style:none;margin-top:8px}
+.opts li+li{border-top:1px solid var(--line)}
+.opt{width:100%;min-height:52px;display:flex;align-items:center;justify-content:space-between;text-align:left;font-size:16px;padding:0 4px}
+.opt small{color:var(--ink-3);font-size:13px}
+.opt:hover{background:var(--sunk)}
+.gps{margin-top:16px}
+
+/* Detail */
+.back-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:8px 8px;background:var(--ground)}
+.back-bar .t{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero{margin:0 16px;aspect-ratio:4/3;border-radius:var(--r);display:flex;align-items:flex-end;padding:20px;position:relative;overflow:hidden}
+.hero .dish{font-weight:800;font-size:36px;line-height:1;letter-spacing:-.035em;color:#fff;max-width:12ch}
+.hero.light .dish{color:var(--ink)}
+.d-body{padding:16px 16px 140px}
+.d-title{font-size:24px;line-height:1.2;letter-spacing:-.025em;font-weight:700}
+.d-price{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+.d-price small{font-size:15px;font-weight:500;color:var(--ink-2);letter-spacing:0}
+.d-seller{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.d-seller b{display:block;font-size:16px}
+.d-seller span{font-size:14px;color:var(--ink-2)}
+.d-km{font-weight:800;font-size:22px;color:var(--hue);white-space:nowrap;text-align:right;line-height:1.1}
+.d-km small{display:block;font-size:12px;font-weight:500;color:var(--ink-2)}
+.d-desc{margin-top:16px;max-width:60ch}
+.field{margin-top:24px}
+.field>label,.field>.lbl{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice label{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:64px;padding:10px 14px;border-radius:var(--r-s);background:var(--sunk);cursor:pointer;transition:background .15s}
+.choice input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.choice b{font-size:15px}
+.choice span{font-size:13px;color:var(--ink-2)}
+.choice label:has(input:checked){background:var(--ink);color:#fff}
+.choice label:has(input:checked) span{color:#d6d6d2}
+.choice label:has(input:focus-visible){outline:2px solid var(--ink);outline-offset:2px}
+.choice label:has(input:disabled){opacity:.45;cursor:not-allowed}
+.var{display:flex;gap:8px;flex-wrap:wrap}
+.stepper{display:inline-flex;align-items:center;background:var(--sunk);border-radius:999px}
+.stepper button{width:48px;height:48px;border-radius:50%;font-size:22px;font-weight:600}
+.stepper button:hover{background:#ebebe8}
+.stepper output{min-width:48px;text-align:center;font-weight:700;font-size:18px}
+.stepper-note{margin-left:12px;color:var(--ink-2);font-size:14px}
+textarea,input[type=text],input[type=tel],input[type=number],select{width:100%;min-height:48px;padding:12px 14px;border-radius:var(--r-s);border:1px solid #d9d9d5;background:var(--ground);font-size:16px}
+textarea{min-height:88px;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:2px solid var(--ink);outline-offset:0;border-color:var(--ink)}
+.preview{margin-top:24px;background:var(--sunk);border-radius:var(--r);padding:14px}
+.preview .lbl{font-weight:700;font-size:15px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline}
+.preview .lbl small{font-weight:500;color:var(--ink-2);font-size:13px}
+.bubble{background:#fff;border-radius:12px 12px 4px 12px;padding:12px 14px;font-size:14px;line-height:1.5;white-space:pre-wrap;border:1px solid var(--line)}
+.dock{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:440px;background:var(--ground);padding:12px 16px max(16px,env(safe-area-inset-bottom));z-index:6;box-shadow:0 -1px 0 var(--line)}
+.dock .fine{font-size:13px;color:var(--ink-2);text-align:center;margin-top:8px}
+@media (min-width:700px){.dock{position:absolute}}
+
+/* Seller form */
+.f-body{padding:4px 16px 140px}
+.f-body h1{font-size:24px;letter-spacing:-.025em;line-height:1.2}
+.f-body .lead{color:var(--ink-2);margin-top:6px;max-width:34ch}
+.photo{margin-top:20px;aspect-ratio:4/3;border-radius:var(--r);background:var(--sunk);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;cursor:pointer;border:2px dashed #cfcfca;transition:border-color .15s}
+.photo:hover{border-color:var(--ink-3)}
+.photo input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo svg{width:32px;height:32px}
+.photo b{font-size:16px}
+.photo span{font-size:14px;color:var(--ink-2)}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo:has(input:focus-visible){outline:2px solid var(--ink);outline-offset:2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:13px;color:var(--ink-2);margin-top:6px}
+.err{font-size:13px;color:var(--hue);margin-top:6px;font-weight:600}
+.invalid{border-color:var(--hue) !important}
+.prefix{position:relative}
+.prefix span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-2);font-weight:600}
+.prefix input{padding-left:44px}
+.geo{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.geo .btn{min-height:48px;font-size:15px}
+.geo-ok{font-size:14px;color:var(--ok);font-weight:600}
+.checks{display:grid;gap:8px}
+.check{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 14px;border-radius:var(--r-s);background:var(--sunk);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--ink)}
+.check b{font-size:15px;display:block}
+.check span{font-size:13px;color:var(--ink-2)}
+
+/* Success */
+.ok-body{padding:24px 16px 40px;display:flex;flex-direction:column;gap:20px}
+.ok-body h1{font-size:28px;letter-spacing:-.03em;line-height:1.15}
+.ok-body .lead{color:var(--ink-2);margin-top:-8px}
+.ok-card{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;background:var(--sunk);border-radius:var(--r);padding:12px}
+.ok-card .tile{aspect-ratio:1;padding:8px}
+.ok-card .tile .dish{font-size:14px}
+.reach{font-size:15px}
+.reach b{color:var(--hue)}
+.stack{display:grid;gap:10px}
+.link-box{display:flex;gap:8px;align-items:center;background:var(--sunk);border-radius:var(--r-s);padding:6px 6px 6px 14px;font-size:14px}
+.link-box code{flex:1;font-family:var(--font);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-box .btn{min-height:40px;font-size:14px;padding:0 14px}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:calc(100% - 32px)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Screen 1: catalogue -->
+  <section class="view" id="v-home" aria-labelledby="home-title">
+    <header class="bar">
+      <span class="mark" aria-label="Dekat.in">Dekat<b>.</b>in</span>
+      <span class="grow"></span>
+    </header>
+    <div class="where">
+      <h1 id="home-title">Jualan tetangga di sekitarmu</h1>
+      <div class="loc">
+        <button class="loc-btn" type="button" id="btn-loc" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+          <span id="loc-label">Caturtunggal, Depok</span>
+        </button>
+      </div>
+    </div>
+    <div class="radius" role="group" aria-label="Jarak maksimal">
+      <span class="radius-label">Dalam</span>
+      <div class="seg">
+        <button type="button" data-r="3" aria-pressed="true">3 KM</button>
+        <button type="button" data-r="5" aria-pressed="false">5 KM</button>
+      </div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+
+    <div class="grid" id="grid" role="list"></div>
+    <p class="credit-line" id="credit-line">Foto produk di prototipe ini adalah contoh dari Wikimedia Commons. <button type="button" id="btn-cred">Lihat kredit foto</button></p>
+
+    <div class="state" id="empty" hidden>
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="var(--sunk)"/>
+        <circle cx="60" cy="60" r="34" fill="#fff"/>
+        <circle cx="60" cy="60" r="6" fill="var(--hue)"/>
+      </svg>
+      <h2 id="empty-title">Belum ada jualan dalam 3 KM</h2>
+      <p id="empty-text">Coba lebarkan ke 5 KM, atau ajak tetanggamu yang jualan untuk pasang produknya di sini.</p>
+      <button class="btn btn-ink" type="button" id="btn-widen">Lihat sampai 5 KM</button>
+    </div>
+
+    <div class="state" id="perm" hidden>
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="var(--sunk)"/>
+        <path d="M60 92s-22-19.5-22-36a22 22 0 0 1 44 0c0 16.5-22 36-22 36Z" fill="#fff"/>
+        <circle cx="60" cy="56" r="7" fill="var(--hue)"/>
+      </svg>
+      <h2>Lokasimu dipakai untuk menghitung jarak</h2>
+      <p>Dekat.in hanya menampilkan jualan dalam 3-5 KM dari tempatmu. Lokasi tidak disimpan dan tidak dibagikan ke penjual.</p>
+      <button class="btn btn-ink" type="button" id="btn-allow">Izinkan lokasi</button>
+      <button class="btn btn-soft" type="button" id="btn-manual">Pilih kelurahan saja</button>
+    </div>
+
+  </section>
+
+  <!-- Screen 3: detail -->
+  <section class="view" id="v-detail" hidden aria-labelledby="d-title">
+    <div class="back-bar">
+      <button class="icon-btn" type="button" data-back aria-label="Kembali ke etalase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <span class="t" id="d-bar-title"></span>
+    </div>
+    <div class="hero" id="d-hero"><img id="d-img" alt=""><span class="dish" id="d-dish" hidden></span></div>
+    <div class="d-body">
+      <h1 class="d-title" id="d-title"></h1>
+      <p class="d-price" id="d-price"></p>
+      <div class="d-seller">
+        <div><b id="d-seller"></b><span id="d-area"></span></div>
+        <div class="d-km" id="d-km"></div>
+      </div>
+      <p class="d-desc" id="d-desc"></p>
+
+      <div class="field" id="f-var-wrap">
+        <span class="lbl" id="var-lbl">Varian</span>
+        <div class="var" role="group" aria-labelledby="var-lbl" id="d-var"></div>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="ful-lbl">Cara terima pesanan</span>
+        <div class="choice" role="radiogroup" aria-labelledby="ful-lbl">
+          <label><input type="radio" name="ful" value="pickup"><b>Ambil sendiri</b><span id="d-pick-note">Gratis, ke rumah penjual</span></label>
+          <label><input type="radio" name="ful" value="delivery"><b>Diantar penjual</b><span id="d-deliv-note">Diatur lewat chat</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="qty-lbl">Jumlah</span>
+        <div style="display:flex;align-items:center">
+          <div class="stepper" role="group" aria-labelledby="qty-lbl">
+            <button type="button" id="q-minus" aria-label="Kurangi">−</button>
+            <output id="q" aria-live="polite">1</output>
+            <button type="button" id="q-plus" aria-label="Tambah">+</button>
+          </div>
+          <span class="stepper-note" id="q-total"></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="note">Catatan untuk penjual</label>
+        <textarea id="note" placeholder="Misal: diambil jam 16.30, atau alamat kos untuk diantar"></textarea>
+      </div>
+
+      <div class="preview" aria-live="polite">
+        <div class="lbl">Pesan yang akan terkirim <small>bisa diubah di WhatsApp</small></div>
+        <div class="bubble" id="wa-preview"></div>
+      </div>
+    </div>
+    <div class="dock">
+      <a class="btn btn-ink btn-block" id="wa-go" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+        Pesan via WhatsApp
+      </a>
+      <p class="fine">Tanpa komisi. Bayar langsung ke penjual.</p>
+    </div>
+  </section>
+
+  <!-- Screen 4: seller form -->
+  <section class="view" id="v-sell" hidden aria-labelledby="s-title">
+    <div class="back-bar">
+      <button class="icon-btn" type="button" data-back aria-label="Kembali ke etalase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+    <form class="f-body" id="sell-form" novalidate>
+      <h1 id="s-title">Pasang jualanmu</h1>
+      <p class="lead">Satu produk, kurang dari dua menit. Tidak perlu bikin akun.</p>
+
+      <label class="photo" id="photo">
+        <input type="file" accept="image/*" id="s-photo" aria-describedby="photo-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <b>Foto produk</b>
+        <span id="photo-hint">Foto dari HP langsung, terang lebih bagus</span>
+      </label>
+
+      <div class="field">
+        <label for="s-shop">Nama usaha</label>
+        <input type="text" id="s-shop" autocomplete="organization" placeholder="Dimsum Bu Ratna" required>
+        <p class="err" id="e-shop" hidden>Isi nama usaha, ini yang dilihat pembeli.</p>
+      </div>
+      <div class="field">
+        <label for="s-name">Nama produk</label>
+        <input type="text" id="s-name" placeholder="Dimsum ayam isi 10" required>
+        <p class="err" id="e-name" hidden>Isi nama produknya.</p>
+      </div>
+      <div class="field">
+        <label for="s-price">Harga</label>
+        <div class="prefix"><span aria-hidden="true">Rp</span><input type="text" inputmode="numeric" id="s-price" placeholder="30.000" required aria-describedby="e-price"></div>
+        <p class="err" id="e-price" hidden>Tulis harga dalam angka, misal 30.000.</p>
+      </div>
+      <div class="field">
+        <label for="s-desc">Deskripsi singkat</label>
+        <textarea id="s-desc" placeholder="Isi per porsi, tahan berapa lama, pesan H-1 atau bisa hari ini"></textarea>
+      </div>
+      <div class="field">
+        <label for="s-wa">Nomor WhatsApp</label>
+        <input type="tel" id="s-wa" inputmode="tel" autocomplete="tel" placeholder="0812 3456 7890" required aria-describedby="wa-hint e-wa">
+        <p class="hint" id="wa-hint">Pesanan masuk ke nomor ini. Tidak ditampilkan sebagai teks di etalase.</p>
+        <p class="err" id="e-wa" hidden>Nomor belum lengkap. Contoh: 0812 3456 7890.</p>
+      </div>
+      <div class="field">
+        <span class="lbl">Lokasi jualan</span>
+        <div class="geo">
+          <button type="button" class="btn btn-soft" id="s-geo">Pakai lokasi saya</button>
+          <span class="geo-ok" id="geo-ok" hidden>Titik tersimpan</span>
+        </div>
+        <label class="sr" for="s-kel">Kelurahan</label>
+        <select id="s-kel" aria-describedby="e-kel"></select>
+        <p class="hint">Pembeli hanya melihat kelurahan dan jarak, bukan alamat lengkapmu.</p>
+        <p class="err" id="e-kel" hidden>Pilih kelurahan atau pakai lokasi saya.</p>
+      </div>
+      <div class="field">
+        <span class="lbl" id="s-ful-lbl">Cara pembeli menerima</span>
+        <div class="checks" role="group" aria-labelledby="s-ful-lbl" aria-describedby="e-ful">
+          <label class="check"><input type="checkbox" id="s-pick" checked><div><b>Bisa ambil sendiri</b><span>Pembeli datang ke tempatmu</span></div></label>
+          <label class="check"><input type="checkbox" id="s-deliv"><div><b>Bisa saya antar</b><span>Kamu atur sendiri jarak dan ongkosnya</span></div></label>
+        </div>
+        <p class="err" id="e-ful" hidden>Pilih minimal satu cara.</p>
+      </div>
+    </form>
+    <div class="dock">
+      <button class="btn btn-ink btn-block" type="submit" form="sell-form" id="s-submit">Tayangkan produk</button>
+    </div>
+  </section>
+
+  <!-- Screen 5: success -->
+  <section class="view" id="v-ok" hidden aria-labelledby="ok-title">
+    <div class="ok-body">
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="var(--ok-tint)"/><path d="M17 29l7 7 15-16" fill="none" stroke="var(--ok)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h1 id="ok-title">Jualanmu sudah tayang</h1>
+      <p class="lead" id="ok-lead"></p>
+      <div class="ok-card">
+        <div class="tile" id="ok-tile"><img id="ok-img" alt="" hidden><span class="dish" id="ok-dish"></span></div>
+        <div>
+          <p class="price" id="ok-price"></p>
+          <p class="pname" id="ok-name"></p>
+          <p class="seller" id="ok-shop"></p>
+        </div>
+      </div>
+      <p class="reach" id="ok-reach"></p>
+      <div class="stack">
+        <a class="btn btn-ink btn-block" id="ok-share" href="#" target="_blank" rel="noopener">Bagikan ke status WhatsApp</a>
+        <button class="btn btn-soft btn-block" type="button" id="ok-view">Lihat di etalase</button>
+      </div>
+      <div>
+        <span class="lbl" style="font-weight:700;font-size:15px;display:block;margin-bottom:8px">Link untuk ubah atau hapus produk</span>
+        <div class="link-box"><code id="ok-link">dekat.in/u/7kq2-ratna</code><button class="btn btn-soft" type="button" id="ok-copy">Salin</button></div>
+        <p class="hint">Simpan link ini. Siapa pun yang punya link ini bisa mengubah produkmu.</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="nav" id="nav" aria-label="Navigasi utama">
+    <button type="button" id="nav-home" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg>
+      Etalase
+    </button>
+    <button type="button" class="nav-sell" id="btn-sell">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Jual
+    </button>
+    <button type="button" id="nav-mine" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.2 11H5.2z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/></svg>
+      Produkku
+    </button>
+  </nav>
+
+  <!-- Produkku: no account, the seller opens the private link saved when publishing -->
+  <dialog class="sheet" id="mine" aria-labelledby="mine-title">
+    <div class="sheet-in">
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="mine-title">Produkku</h2>
+      <p class="sub">Dekat.in tidak pakai akun. Untuk ubah harga, tandai habis, atau hapus produk, buka link yang kamu dapat saat menayangkan.</p>
+      <div class="field">
+        <label for="mine-link">Link produkmu</label>
+        <input type="text" id="mine-link" placeholder="dekat.in/u/7kq2-ratna" autocomplete="off">
+      </div>
+      <div class="stack" style="margin-top:16px">
+        <button class="btn btn-ink btn-block" type="button" id="mine-open">Buka produk</button>
+        <button class="btn btn-soft btn-block" type="button" id="mine-close">Nanti saja</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="cred" aria-labelledby="cred-title">
+    <div class="sheet-in">
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="cred-title">Kredit foto</h2>
+      <p class="sub">Foto contoh untuk prototipe, diganti foto asli penjual saat rilis.</p>
+      <ul class="cred" id="cred-list"></ul>
+      <button class="btn btn-soft btn-block" type="button" id="cred-close" style="margin-top:12px">Tutup</button>
+    </div>
+  </dialog>
+
+  <!-- Screen 2: manual location sheet -->
+  <dialog class="sheet" id="sheet" aria-labelledby="sheet-title">
+    <div class="sheet-in">
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="sheet-title">Kamu di mana?</h2>
+      <p class="sub">Pilih kelurahan terdekat. Jarak dihitung dari tengah kelurahan.</p>
+      <div class="chips" role="group" aria-label="Kecamatan" id="kec"></div>
+      <ul class="opts" id="kel"></ul>
+      <button class="btn btn-soft btn-block gps" type="button" id="sheet-gps">Pakai lokasi HP saja</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</div>
+
+<script>
+// Sample data. Replace with real sellers before launch.
+const AREAS = {
+  'Depok':   { 'Caturtunggal':[-7.7756,110.3920], 'Condongcatur':[-7.7550,110.3960], 'Maguwoharjo':[-7.7600,110.4300] },
+  'Mlati':   { 'Sinduadi':[-7.7550,110.3650], 'Sendangadi':[-7.7380,110.3550], 'Tlogoadi':[-7.7250,110.3400] },
+  'Ngaglik': { 'Minomartani':[-7.7330,110.4080], 'Sinduharjo':[-7.7200,110.4000], 'Sardonoharjo':[-7.7100,110.4150] }
+};
+const P = [
+  { id:'brownies', img:'assets/brownies.jpg', name:'Brownies panggang sekat', dish:'Brownies sekat', price:45000, unit:'1 loyang 20×20', shop:'Brownies Mbak Sarah', area:'Caturtunggal, Depok', at:[-7.7740,110.3880], tone:'--t-teh', pick:true, deliv:false, wa:'6281328110421', vars:['Original','Keju','Ovomaltine'], desc:'Dipanggang pagi tiap hari. Dipotong 16 sekat, tahan 3 hari di suhu ruang. Pesan sebelum jam 10 untuk ambil sore.' },
+  { id:'buket', img:'assets/buket.jpg', name:'Buket bunga wisuda', dish:'Buket wisuda', price:85000, unit:'ukuran sedang', shop:'Buket Fajar', area:'Caturtunggal, Depok', at:[-7.7810,110.3990], tone:'--t-cabai', pick:true, deliv:true, wa:'6285729004417', vars:['Bunga segar','Bunga kering','Snack'], desc:'Bisa jadi dalam 3 jam. Warna bunga dan pita bisa request lewat chat. Antar sekitar UGM dan UNY.' },
+  { id:'tiramisu', img:'assets/tiramisu.jpg', name:'Dessert box tiramisu', dish:'Tiramisu box', price:35000, unit:'box 500 ml', shop:'Brownies Mbak Sarah', area:'Caturtunggal, Depok', at:[-7.7740,110.3880], tone:'--t-santan', light:true, pick:true, deliv:false, wa:'6281328110421', vars:[], desc:'Mascarpone asli, tanpa alkohol. Simpan di kulkas, paling enak dimakan hari yang sama.' },
+  { id:'nasibox', img:'assets/ayam-bakar.jpg', name:'Nasi box ayam bakar', dish:'Nasi ayam bakar', price:25000, unit:'per box', shop:'Katering Bu Ningsih', area:'Sinduadi, Mlati', at:[-7.7600,110.3760], tone:'--t-gula', pick:true, deliv:true, wa:'6281227306658', vars:['Pedas','Tidak pedas'], desc:'Nasi, ayam bakar, lalapan, sambal, kerupuk. Minimal 10 box untuk diantar, pesan H-1.' },
+  { id:'lauk', img:'assets/lodeh.jpg', name:'Lauk matang harian', dish:'Lauk harian', price:18000, unit:'per bungkus', shop:'Katering Bu Ningsih', area:'Sinduadi, Mlati', at:[-7.7600,110.3760], tone:'--t-kunyit', light:true, pick:true, deliv:false, wa:'6281227306658', vars:['Sayur lodeh','Oseng tempe','Opor'], desc:'Menu ganti tiap hari, info menu di status WA jam 7 pagi. Ambil jam 10 sampai habis.' },
+  { id:'sayur', img:'assets/sayur.jpg', name:'Sayur potong siap masak', dish:'Sayur siap masak', price:15000, unit:'per pack', shop:'Sayur Bu Tini', area:'Maguwoharjo, Depok', at:[-7.7680,110.4150], tone:'--t-daun', pick:false, deliv:true, wa:'6287839552201', vars:['Sop','Capcay','Lodeh'], desc:'Sudah dicuci dan dipotong, tinggal masak. Antar pagi jam 6 sampai 8 untuk pesanan malam sebelumnya.' },
+  { id:'dimsum', img:'assets/dimsum.jpg', name:'Dimsum ayam homemade', dish:'Dimsum ayam', price:30000, unit:'isi 10', shop:'Dimsum Bu Ratna', area:'Minomartani, Ngaglik', at:[-7.7400,110.4050], tone:'--t-kunyit', light:true, pick:true, deliv:true, wa:'6281392775014', vars:['Original','Pedas manis'], desc:'Frozen, tahan 2 minggu di freezer. Kukus 15 menit. Antar gratis sore hari untuk radius 2 KM.' },
+  { id:'jamu', img:'assets/jamu.jpg', name:'Jamu kunyit asam', dish:'Kunyit asam', price:15000, unit:'botol 500 ml', shop:'Jamu Bu Sri', area:'Kotagede, Yogyakarta', at:[-7.8270,110.3990], tone:'--t-kunyit', light:true, pick:true, deliv:false, wa:'6282134406672', vars:['Kunyit asam','Beras kencur'], desc:'Dibuat subuh, tanpa pengawet. Tahan 3 hari di kulkas.' },
+  { id:'keripik', img:'assets/keripik.jpg', name:'Keripik tempe', dish:'Keripik tempe', price:20000, unit:'250 gram', shop:'Pak Dedi', area:'Kasihan, Bantul', at:[-7.8250,110.3400], tone:'--t-ungu', pick:true, deliv:false, wa:'6281804411930', vars:[], desc:'Renyah, digoreng tiap dua hari. Satu bungkus tahan sebulan.' }
+];
+
+const CREDITS = [{"t": "Chocolate brownies", "c": "en:User:Gdr", "l": "CC BY-SA 3.0", "p": "https://commons.wikimedia.org/w/index.php?curid=131338"}, {"t": "Tiramisu - Raffaele Diomede", "c": "Raffaele Diomede from Pordenone, ITALIA", "l": "CC BY 2.0", "p": "https://commons.wikimedia.org/w/index.php?curid=11769909"}, {"t": "Birthday flower bouquet - 2021-08-26 - Sarah Stierch", "c": "Missvain", "l": "CC BY 4.0", "p": "https://commons.wikimedia.org/w/index.php?curid=109333610"}, {"t": "Ayam bakar khas Taliwang 2", "c": "Midori", "l": "CC BY 3.0", "p": "https://commons.wikimedia.org/w/index.php?curid=10491299"}, {"t": "Sayur lodeh", "c": "Midori", "l": "CC BY 3.0", "p": "https://commons.wikimedia.org/w/index.php?curid=13301112"}, {"t": "Chopped Vegetables", "c": "Shruti Sona", "l": "CC0", "p": "https://wordpress.org/photos/photo/287638f844/"}, {"t": "Jamu", "c": "dpinpin", "l": "CC BY 2.0", "p": "https://commons.wikimedia.org/w/index.php?curid=10217646"}, {"t": "Keripik tempe Lombok", "c": "Midori", "l": "CC BY 3.0", "p": "https://commons.wikimedia.org/w/index.php?curid=13320352"}, {"t": "Pecel Solo", "c": "Gunawan Kartapranata", "l": "CC BY-SA 3.0", "p": "https://commons.wikimedia.org/w/index.php?curid=18484165"}, {"t": "Siomay Bandung", "c": "Gunawan Kartapranata", "l": "CC BY-SA 4.0", "p": "https://commons.wikimedia.org/w/index.php?curid=50233179"}];
+const S = { at: AREAS['Depok']['Caturtunggal'], label:'Caturtunggal, Depok', r:3, kec:'Depok', current:null, qty:1, variant:null, from:'home' };
+const $ = s => document.querySelector(s);
+const rp = n => 'Rp' + n.toLocaleString('id-ID');
+const km = (a,b) => { const R=6371, d=x=>x*Math.PI/180; const dl=d(b[0]-a[0]), dn=d(b[1]-a[1]); const h=Math.sin(dl/2)**2+Math.cos(d(a[0]))*Math.cos(d(b[0]))*Math.sin(dn/2)**2; return 2*R*Math.asin(Math.sqrt(h)); };
+const fmtKm = d => { const m = Math.max(50, Math.round(d*20)*50); return m < 1000 ? m + ' m' : d.toFixed(1).replace('.',',') + ' KM'; };
+
+function tile(p, cls){ return `<div class="${cls} ${p.light?'light':''}" style="background:var(${p.tone})">`; }
+
+function renderHome(){
+  const list = P.map(p => ({...p, d: km(S.at, p.at)})).filter(p => p.d <= S.r).sort((a,b) => a.d-b.d);
+  $('#loc-label').textContent = S.label;
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.r === S.r)));
+  $('#count').textContent = list.length ? `${list.length} jualan` : '';
+  $('#grid').innerHTML = list.map(p => `
+    <button class="item" type="button" role="listitem" data-id="${p.id}" aria-label="${p.name}, ${rp(p.price)}, ${p.shop}, ${fmtKm(p.d)}">
+      ${tile(p,'tile')}<span class="km">${fmtKm(p.d)}</span>${p.img ? `<img src="${p.img}" alt="" loading="lazy">` : `<span class="dish">${p.dish}</span>`}</div>
+      <div class="meta">
+        <p class="price">${rp(p.price)}</p>
+        <p class="pname">${p.name}</p>
+        <p class="seller">${p.shop}</p>
+        <div class="ful">${p.pick?'<span class="pill">Ambil sendiri</span>':''}${p.deliv?'<span class="pill ok">Diantar</span>':''}</div>
+      </div>
+    </button>`).join('');
+  const empty = list.length === 0;
+  $('#grid').hidden = empty;
+  $('#empty').hidden = !empty;
+  $('#credit-line').hidden = empty;
+  $('#empty-title').textContent = `Belum ada jualan dalam ${S.r} KM`;
+  $('#btn-widen').hidden = S.r === 5;
+  $('#empty-text').textContent = S.r === 3
+    ? 'Coba lebarkan ke 5 KM, atau ajak tetanggamu yang jualan untuk pasang produknya di sini.'
+    : 'Dekat.in baru dibuka di Depok, Mlati, dan Ngaglik. Ajak tetanggamu yang jualan untuk pasang produknya di sini.';
+}
+
+function show(id){
+  ['v-home','v-detail','v-sell','v-ok'].forEach(v => $('#'+v).hidden = v !== id);
+  $('#nav').hidden = !(id === 'v-home' || id === 'v-ok');
+  $('#nav-home').setAttribute('aria-current', id === 'v-home' ? 'page' : 'false');
+  window.scrollTo(0,0);
+}
+
+function waText(){
+  const p = S.current, ful = document.querySelector('input[name=ful]:checked')?.value;
+  const note = $('#note').value.trim();
+  return `Halo ${p.shop}, saya melihat produk ${p.name} di Dekat.in.\nSaya ingin memesan:\n- Produk: ${p.name}\n- Varian: ${S.variant || '-'}\n- Jumlah: ${S.qty} (${p.unit})\n- Metode Pengambilan: ${ful==='delivery'?'Diantar Penjual':'Ambil Sendiri di Tempat'}\n- Catatan Tambahan: ${note || '-'}\n\nApakah pesanan ini masih tersedia? Terima kasih!`;
+}
+function syncWa(){
+  const t = waText();
+  $('#wa-preview').textContent = t;
+  $('#wa-go').href = `https://wa.me/${S.current.wa}?text=${encodeURIComponent(t)}`;
+  $('#q').textContent = S.qty;
+  $('#q-total').textContent = 'Total ' + rp(S.qty * S.current.price);
+  $('#q-minus').disabled = S.qty <= 1;
+}
+
+function openDetail(id){
+  const p = P.find(x => x.id === id); S.current = p; S.qty = 1; S.variant = p.vars[0] || null;
+  const d = km(S.at, p.at);
+  $('#d-bar-title').textContent = p.shop;
+  const h = $('#d-hero'); h.style.background = `var(${p.tone})`; h.classList.toggle('light', !!p.light);
+  $('#d-dish').textContent = p.dish; $('#d-dish').hidden = !!p.img;
+  const di = $('#d-img'); di.hidden = !p.img; if (p.img) { di.src = p.img; di.alt = p.name; }
+  $('#d-title').textContent = p.name;
+  $('#d-price').innerHTML = `${rp(p.price)} <small>${p.unit}</small>`;
+  $('#d-seller').textContent = p.shop;
+  $('#d-area').textContent = p.area;
+  $('#d-km').innerHTML = `${fmtKm(d)}<small>dari ${S.label.split(',')[0]}</small>`;
+  $('#d-desc').textContent = p.desc;
+  $('#f-var-wrap').hidden = !p.vars.length;
+  $('#d-var').innerHTML = p.vars.map((v,i) => `<button type="button" class="chip" aria-pressed="${i===0}" data-v="${v}">${v}</button>`).join('');
+  const [pick, deliv] = document.querySelectorAll('input[name=ful]');
+  pick.disabled = !p.pick; deliv.disabled = !p.deliv;
+  $('#d-pick-note').textContent = p.pick ? 'Gratis, ke rumah penjual' : 'Tidak tersedia';
+  $('#d-deliv-note').textContent = p.deliv ? 'Ongkos diatur lewat chat' : 'Tidak tersedia';
+  (p.pick ? pick : deliv).checked = true;
+  $('#note').value = '';
+  syncWa(); show('v-detail');
+  document.querySelector('#v-detail [data-back]').focus();
+}
+
+/* Location sheet */
+function renderSheet(){
+  $('#kec').innerHTML = Object.keys(AREAS).map(k => `<button type="button" class="chip" aria-pressed="${k===S.kec}" data-k="${k}">${k}</button>`).join('');
+  $('#kel').innerHTML = Object.entries(AREAS[S.kec]).map(([n,c]) => `<li><button class="opt" type="button" data-n="${n}"><span>${n}</span><small>${n===S.label.split(',')[0]?'Dipilih':''}</small></button></li>`).join('');
+}
+function openSheet(){ renderSheet(); $('#sheet').showModal(); $('#kec button[aria-pressed=true]').focus(); }
+
+/* Events */
+$('#grid').addEventListener('click', e => { const b = e.target.closest('.item'); if (b) { S.lastId = b.dataset.id; openDetail(b.dataset.id); } });
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => { S.r = +b.dataset.r; renderHome(); }));
+$('#btn-widen').addEventListener('click', () => { S.r = 5; renderHome(); });
+$('#btn-loc').addEventListener('click', openSheet);
+$('#btn-manual').addEventListener('click', openSheet);
+$('#btn-allow').addEventListener('click', useGps);
+$('#sheet-gps').addEventListener('click', () => { $('#sheet').close(); useGps(); });
+$('#kec').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; S.kec = b.dataset.k; renderSheet(); $(`#kec [data-k="${S.kec}"]`).focus(); });
+$('#kel').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (!b) return; S.at = AREAS[S.kec][b.dataset.n]; S.label = `${b.dataset.n}, ${S.kec}`; $('#sheet').close(); $('#perm').hidden = true; renderHome(); $('#btn-loc').focus(); });
+$('#sheet').addEventListener('click', e => { if (e.target === $('#sheet')) $('#sheet').close(); });
+
+function useGps(){
+  if (!navigator.geolocation) { openSheet(); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    S.at = [pos.coords.latitude, pos.coords.longitude]; S.label = 'Lokasimu sekarang';
+    $('#perm').hidden = true; renderHome();
+  }, () => { $('#perm').hidden = true; toast('Izin lokasi ditolak. Pilih kelurahan saja.'); openSheet(); }, { timeout: 8000 });
+}
+
+$('#d-var').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b) return; S.variant = b.dataset.v; $('#d-var').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x===b))); syncWa(); });
+document.querySelectorAll('input[name=ful]').forEach(r => r.addEventListener('change', syncWa));
+$('#note').addEventListener('input', syncWa);
+$('#q-minus').addEventListener('click', () => { if (S.qty > 1) { S.qty--; syncWa(); } });
+$('#q-plus').addEventListener('click', () => { if (S.qty < 99) { S.qty++; syncWa(); } });
+document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => {
+  show('v-home'); renderHome();
+  const back = S.lastId && $(`.item[data-id="${S.lastId}"]`); (back || $('#btn-loc')).focus();
+}));
+
+/* Seller form */
+const openSell = () => { $('#s-kel').innerHTML = '<option value="">Pilih kelurahan</option>' + Object.entries(AREAS).map(([k,o]) => `<optgroup label="${k}">${Object.keys(o).map(n => `<option value="${k}|${n}">${n}</option>`).join('')}</optgroup>`).join(''); show('v-sell'); $('#s-shop').focus(); };
+$('#btn-sell').addEventListener('click', openSell);
+$('#s-photo').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const url = URL.createObjectURL(f); let img = $('#photo img'); if (!img) { img = document.createElement('img'); img.alt = 'Pratinjau foto produk'; $('#photo').appendChild(img); } img.src = url;
+});
+$('#s-price').addEventListener('input', e => { const n = e.target.value.replace(/\D/g,''); e.target.value = n ? (+n).toLocaleString('id-ID') : ''; });
+let geo = null;
+$('#s-geo').addEventListener('click', () => {
+  const done = c => { geo = c; $('#geo-ok').hidden = false; $('#s-geo').textContent = 'Perbarui lokasi'; };
+  if (!navigator.geolocation) { toast('HP ini tidak bisa membaca lokasi. Pilih kelurahan saja.'); return; }
+  navigator.geolocation.getCurrentPosition(p => done([p.coords.latitude, p.coords.longitude]), () => toast('Izin lokasi ditolak. Pilih kelurahan saja.'), { timeout: 8000 });
+});
+function setErr(input, err, bad){ $(err).hidden = !bad; if (input) { $(input).classList.toggle('invalid', bad); $(input).setAttribute('aria-invalid', String(bad)); } return bad; }
+$('#sell-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const wa = $('#s-wa').value.replace(/\D/g,'');
+  const bad = [
+    setErr('#s-shop','#e-shop', !$('#s-shop').value.trim()),
+    setErr('#s-name','#e-name', !$('#s-name').value.trim()),
+    setErr('#s-price','#e-price', !$('#s-price').value),
+    setErr('#s-wa','#e-wa', wa.length < 10),
+    setErr('#s-kel','#e-kel', !$('#s-kel').value && !geo),
+    setErr(null,'#e-ful', !$('#s-pick').checked && !$('#s-deliv').checked)
+  ];
+  const firstBad = ['#s-shop','#s-name','#s-price','#s-wa','#s-kel','#s-pick'][bad.indexOf(true)];
+  if (firstBad) { $(firstBad).focus(); return; }
+  const [kec, kel] = ($('#s-kel').value || 'Depok|Caturtunggal').split('|');
+  const name = $('#s-name').value.trim(), shop = $('#s-shop').value.trim();
+  const item = { id:'new'+Date.now(), name, dish: name.split(' ').slice(0,2).join(' '), price: +$('#s-price').value.replace(/\D/g,''), unit:'per porsi', shop, area:`${kel}, ${kec}`, at: geo || AREAS[kec][kel], img: $('#photo img')?.src || null, tone:'--t-daun', pick: $('#s-pick').checked, deliv: $('#s-deliv').checked, wa: wa.replace(/^0/,'62'), vars:[], desc: $('#s-desc').value.trim() || 'Tanya detailnya lewat chat.' };
+  P.unshift(item);
+  const t = $('#ok-tile'); t.style.background = `var(${item.tone})`;
+  $('#ok-dish').textContent = item.dish; $('#ok-dish').hidden = !!item.img; const oi = $('#ok-img'); oi.hidden = !item.img; if (item.img) { oi.src = item.img; oi.alt = item.name; } $('#ok-price').textContent = rp(item.price); $('#ok-name').textContent = item.name; $('#ok-shop').textContent = `${item.shop} · ${item.area}`;
+  $('#ok-lead').textContent = 'Pembeli di sekitarmu sudah bisa melihat dan memesan lewat WhatsApp.';
+  $('#ok-reach').innerHTML = `Terlihat oleh pembeli dalam <b>5 KM</b> dari ${kel}.`;
+  const share = `Sekarang ${item.name} bisa dipesan lewat Dekat.in. ${rp(item.price)}, langsung chat aku ya: https://dekat.in/p/${item.id}`;
+  $('#ok-share').href = `https://wa.me/?text=${encodeURIComponent(share)}`;
+  $('#ok-link').textContent = `dekat.in/u/${item.id.slice(-4)}-${shop.toLowerCase().split(' ').pop()}`;
+  S.lastId = item.id;
+  show('v-ok'); $('#ok-title').setAttribute('tabindex','-1'); $('#ok-title').focus();
+});
+$('#ok-view').addEventListener('click', () => { S.at = P[0].at; S.label = P[0].area; S.r = 3; show('v-home'); renderHome(); const b = $(`.item[data-id="${P[0].id}"]`); b && b.focus(); });
+$('#ok-copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#ok-link').textContent); toast('Link tersalin'); } catch { toast('Salin manual: ' + $('#ok-link').textContent); } });
+
+$('#nav-home').addEventListener('click', () => { show('v-home'); renderHome(); });
+$('#nav-mine').addEventListener('click', () => { $('#mine').showModal(); $('#mine-link').focus(); });
+$('#mine-close').addEventListener('click', () => $('#mine').close());
+$('#mine-open').addEventListener('click', () => { const v = $('#mine-link').value.trim(); if (!/dekat\.in\/u\//.test(v)) { toast('Tempel link yang diawali dekat.in/u/'); return; } $('#mine').close(); toast('Di versi asli, link ini membuka halaman ubah produk.'); });
+$('#btn-cred').addEventListener('click', () => { $('#cred-list').innerHTML = CREDITS.map(c => `<li><a href="${c.p}" target="_blank" rel="noopener">${c.t}</a><span>${c.c} · ${c.l}</span></li>`).join(''); $('#cred').showModal(); $('#cred-close').focus(); });
+$('#cred-close').addEventListener('click', () => $('#cred').close());
+['mine','cred'].forEach(id => $('#'+id).addEventListener('click', e => { if (e.target === $('#'+id)) $('#'+id).close(); }));
+
+let tt; function toast(m){ const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 2600); }
+
+/* Demo entry: ?state=perm shows the location permission state, ?state=empty the empty state */
+const q = new URLSearchParams(location.search).get('state');
+renderHome();
+if (q === 'perm') { $('#grid').hidden = true; $('#credit-line').hidden = true; $('#count').textContent = ''; $('#perm').hidden = false; }
+if (q === 'empty') { S.kec='Mlati'; S.at = AREAS['Mlati']['Tlogoadi']; S.label = 'Tlogoadi, Mlati'; renderHome(); }
+</script>
+</body>
+</html>

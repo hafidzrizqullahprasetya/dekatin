@@ -1,0 +1,56 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Dekat.in — Desain UI MVP</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+@page{size:A4 landscape;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#141414;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:297mm;height:210mm;padding:10mm 16mm;page-break-after:always;overflow:hidden}
+.cover{display:grid;grid-template-columns:1.1fr 1fr;gap:12mm;align-items:center}
+.mark{font-weight:800;font-size:22pt;letter-spacing:-.03em} .mark b{color:#b42318}
+h1{font-size:34pt;line-height:1.05;letter-spacing:-.035em;margin:6mm 0 4mm}
+.lead{font-size:12pt;line-height:1.5;max-width:120mm;color:#333}
+dl{margin-top:8mm;display:grid;grid-template-columns:34mm 1fr;gap:2.5mm 4mm;font-size:10pt}
+dt{color:#5b5b57} dd{font-weight:600}
+.cover-shots{display:flex;gap:5mm;justify-content:flex-end}
+.cover-shots img{width:52mm;border-radius:5mm;border:1px solid #e7e7e4}
+.cover-shots img:nth-child(2){margin-top:14mm}
+.screens{display:grid;grid-template-columns:repeat(3,1fr);gap:9mm;align-items:start}
+figure{display:flex;flex-direction:column;align-items:flex-start;gap:3mm}
+figure img{width:64mm;flex:none;border-radius:4mm;border:1px solid #e7e7e4}
+.tag{display:inline-block;font-size:7.5pt;font-weight:700;background:#f4f4f2;color:#5b5b57;padding:1mm 2mm;border-radius:10mm}
+h3{font-size:12pt;letter-spacing:-.01em;margin:1.5mm 0 1mm}
+figcaption{width:78mm} figcaption p{font-size:9pt;line-height:1.45;color:#333}
+.notes h2{font-size:18pt;letter-spacing:-.02em;margin-bottom:5mm}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12mm}
+.notes h4{font-size:11pt;margin:4mm 0 2mm}
+.notes ul{padding-left:5mm;font-size:9.5pt;line-height:1.55}
+.cred{list-style:none;padding:0 !important;font-size:8pt !important}
+.cred li{padding:1mm 0;border-top:1px solid #e7e7e4} .cred span{color:#767672}
+</style></head><body>
+<section class="page cover"><div>
+<div class="mark">Dekat<b>.</b>in</div>
+<h1>Desain UI MVP</h1>
+<p class="lead">Etalase digital hyperlocal: pembeli menemukan jualan rumahan tetangga dalam radius 3–5 KM, lalu memesan langsung lewat WhatsApp. Tanpa komisi, tanpa ongkir kurir pihak ketiga, tanpa akun penjual.</p>
+<dl><dt>Kelompok</dt><dd>11 · Inovasi dan Kewirausahaan Kreatif</dd>
+<dt>Cakupan</dt><dd>5 fitur MUST HAVE dari tugas Prioritas Fitur & MVP</dd>
+<dt>Perangkat</dt><dd>Web mobile / PWA, lebar 390 px</dd>
+<dt>Tanggal</dt><dd>4 November 2026</dd></dl>
+</div><div class="cover-shots"><img src="screens/01-etalase.png"><img src="screens/03b-pesan-wa.png"></div></section>
+<section class="page screens"><figure><img src="screens/01-etalase.png" alt="Etalase hyperlocal"><figcaption><span class="tag">Fitur 1, 2, 5</span><h3>Etalase hyperlocal</h3><p>Pembeli langsung melihat jualan tetangga yang diurutkan dari jarak terdekat. Jarak (merah) adalah satu-satunya warna aksen karena itulah inti produk. Radius bisa diganti 3 KM atau 5 KM. Navbar mengambang: Etalase, Jual, Produkku.</p></figcaption></figure><figure><img src="screens/02-pilih-lokasi.png" alt="Pilih lokasi manual"><figcaption><span class="tag">Fitur 1</span><h3>Pilih lokasi manual</h3><p>Muncul kalau izin GPS ditolak atau pembeli ingin ganti titik. Pilih kecamatan (Depok, Mlati, Ngaglik), lalu kelurahan. Jarak dihitung dari tengah kelurahan.</p></figcaption></figure><figure><img src="screens/03a-detail.png" alt="Detail produk"><figcaption><span class="tag">Fitur 2</span><h3>Detail produk</h3><p>Foto, harga per satuan, penjual, kelurahan, dan jarak dari lokasi pembeli. Varian dipilih dengan chip.</p></figcaption></figure></section><section class="page screens"><figure><img src="screens/03b-pesan-wa.png" alt="Pesan via WhatsApp"><figcaption><span class="tag">Fitur 3, 5</span><h3>Pesan via WhatsApp</h3><p>Pembeli memilih ambil sendiri atau diantar, jumlah, dan catatan. Pratinjau pesan ikut berubah, lalu tombol membuka wa.me dengan pesan terisi otomatis. Tanpa komisi, bayar langsung ke penjual.</p></figcaption></figure><figure><img src="screens/04a-form.png" alt="Form unggah cepat penjual"><figcaption><span class="tag">Fitur 4</span><h3>Form unggah cepat penjual</h3><p>Satu kolom, tanpa akun. Foto, nama usaha, nama produk, harga, deskripsi, nomor WhatsApp, lokasi, dan cara terima.</p></figcaption></figure><figure><img src="screens/04b-form-validasi.png" alt="Validasi form"><figcaption><span class="tag">Fitur 4</span><h3>Validasi form</h3><p>Kesalahan baru muncul setelah penjual menekan Tayangkan, tepat di bawah kolomnya, dan fokus pindah ke kolom pertama yang salah.</p></figcaption></figure></section><section class="page screens"><figure><img src="screens/05-sukses.png" alt="Sukses tayang"><figcaption><span class="tag">Fitur 4</span><h3>Sukses tayang</h3><p>Ringkasan produk, jangkauan 5 KM, tombol bagikan ke status WhatsApp, dan link rahasia untuk ubah atau hapus produk (pengganti akun).</p></figcaption></figure><figure><img src="screens/08-produkku.png" alt="Produkku"><figcaption><span class="tag">Usulan, menjawab celah PRD</span><h3>Produkku</h3><p>Karena tanpa akun, penjual membuka produknya lewat link rahasia yang didapat saat menayangkan.</p></figcaption></figure><figure><img src="screens/06-kosong.png" alt="State kosong"><figcaption><span class="tag">State</span><h3>State kosong</h3><p>Tidak ada jualan dalam 3 KM: ajakan melebarkan ke 5 KM atau mengajak tetangga berjualan.</p></figcaption></figure></section><section class="page screens"><figure><img src="screens/07-izin-lokasi.png" alt="Izin lokasi"><figcaption><span class="tag">State</span><h3>Izin lokasi</h3><p>Menjelaskan kenapa lokasi dibutuhkan dan bahwa lokasi tidak disimpan. Ada jalan keluar tanpa GPS.</p></figcaption></figure></section>
+<section class="page notes"><h2>Keputusan desain & catatan</h2><div class="cols"><div>
+<h4>Keputusan desain</h4><ul>
+<li>Satu warna aksen (merah cabai) hanya untuk jarak, karena jarak adalah nilai utama produk. Tombol aksi utama hitam.</li>
+<li>Foto produk menjadi sumber warna; antarmuka lain netral supaya jualan yang menonjol.</li>
+<li>Satu typeface: Plus Jakarta Sans (dirancang di Indonesia), angka tabular untuk harga.</li>
+<li>Tombol WhatsApp tidak hijau agar hanya ada satu aksi utama yang menonjol per layar.</li>
+<li>Navbar mengambang di bawah (Etalase, Jual, Produkku) agar jempol mudah menjangkau; disembunyikan di layar yang punya tombol aksi sendiri.</li>
+<li>Target sentuh minimal 44 px, fokus keyboard terlihat, kontras teks memenuhi WCAG AA.</li></ul>
+<h4>Usulan yang menjawab celah PRD</h4><ul>
+<li>Link rahasia per produk sebagai pengganti akun untuk ubah/hapus produk.</li>
+<li>Form penjual meminta lokasi (GPS atau kelurahan) karena filter radius butuh koordinat penjual.</li>
+<li>Form penjual menambahkan kolom deskripsi yang ada di spesifikasi katalog.</li></ul></div><div>
+<h4>Data dan foto contoh</h4><ul>
+<li>Penjual dan produk diambil dari responden wawancara (Bu Ratna, Bu Ningsih, Mbak Sarah, Fajar, Bu Sri, Pak Dedi); nomor WhatsApp fiktif.</li>
+<li>Foto produk adalah foto contoh berlisensi terbuka dari Wikimedia Commons, diganti foto asli penjual saat rilis:</li></ul>
+<ul class="cred"><li><b>Chocolate brownies</b> · en:User:Gdr · CC BY-SA 3.0 · <span>https://commons.wikimedia.org/w/index.php?curid=131338</span></li><li><b>Tiramisu - Raffaele Diomede</b> · Raffaele Diomede from Pordenone, ITALIA · CC BY 2.0 · <span>https://commons.wikimedia.org/w/index.php?curid=11769909</span></li><li><b>Birthday flower bouquet - 2021-08-26 - Sarah Stierch</b> · Missvain · CC BY 4.0 · <span>https://commons.wikimedia.org/w/index.php?curid=109333610</span></li><li><b>Ayam bakar khas Taliwang 2</b> · Midori · CC BY 3.0 · <span>https://commons.wikimedia.org/w/index.php?curid=10491299</span></li><li><b>Sayur lodeh</b> · Midori · CC BY 3.0 · <span>https://commons.wikimedia.org/w/index.php?curid=13301112</span></li><li><b>Chopped Vegetables</b> · Shruti Sona · CC0 · <span>https://wordpress.org/photos/photo/287638f844/</span></li><li><b>Jamu</b> · dpinpin · CC BY 2.0 · <span>https://commons.wikimedia.org/w/index.php?curid=10217646</span></li><li><b>Keripik tempe Lombok</b> · Midori · CC BY 3.0 · <span>https://commons.wikimedia.org/w/index.php?curid=13320352</span></li><li><b>Pecel Solo</b> · Gunawan Kartapranata · CC BY-SA 3.0 · <span>https://commons.wikimedia.org/w/index.php?curid=18484165</span></li><li><b>Siomay Bandung</b> · Gunawan Kartapranata · CC BY-SA 4.0 · <span>https://commons.wikimedia.org/w/index.php?curid=50233179</span></li></ul></div></div></section>
+</body></html>
