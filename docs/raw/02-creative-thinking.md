@@ -1,5 +1,5 @@
 **Tugas IKK (Creative Thinking & Problem Identification)**  
-Kelompok: 11  
+Kelompok: Dekat.in  
 Anggota:   
 1\) Hafidz Rizqullah Prasetya 24/535493/SV/24243  
 2\) Pralambang Bhayangkara Yhudanto 24/536223/SV/24414  

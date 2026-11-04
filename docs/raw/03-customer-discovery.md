@@ -1,5 +1,5 @@
 **Tugas IKK — Riset Pasar & Customer Discovery (Wawancara & Validasi Lapangan)**  
-Kelompok: 11  
+Kelompok: Dekat.in  
 Anggota:   
 1\) Hafidz Rizqullah Prasetya 24/535493/SV/24243  
 2\) Pralambang Bhayangkara Yhudanto 24/536223/SV/24414  
@@ -77,7 +77,7 @@ Anggota:
     
 
 11. **Kesimpulan**  
-    Proses Customer Discovery melalui wawancara langsung kepada 10 calon pengguna (6 penjual mikro/rumahan dan 4 pembeli lokal) serta observasi lapangan secara fundamental mengubah arah strategi kelompok 12:  
+    Proses Customer Discovery melalui wawancara langsung kepada 10 calon pengguna (6 penjual mikro/rumahan dan 4 pembeli lokal) serta observasi lapangan secara fundamental mengubah arah strategi Kelompok Dekat.in:  
 1. Masalah utama penjual rumahan bukanlah "gaptek", melainkan persaingan algoritma pencarian marketplace yang menenggelamkan toko baru, serta tingginya potongan komisi admin yang menggerus margin usaha kecil.  
 2. Penjualan lewat media sosial nasional berujung sia-sia karena terbentur ongkos kirim logistik yang sering kali lebih mahal daripada harga produk itu sendiri. Pembeli dan penjual sama-sama membutuhkan "Hyperlocal Discovery" (radius \<5 KM).  
 3. Penyempurnaan konsep dari marketplace konvensional menjadi Platform Etalase Hyperlocal Berbasis Radius dengan Direct WhatsApp Order memberikan solusi yang realistis: tanpa potongan komisi (0% admin fee), tanpa biaya kurir pihak ketiga (opsi ambil mandiri atau antar lokal), dan tanpa registrasi dasbor yang rumit.

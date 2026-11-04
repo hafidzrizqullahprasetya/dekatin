@@ -1,5 +1,5 @@
 **Tugas IKK — Value Proposition Canvas (VPC) & Business Model Canvas (BMC)**  
-Kelompok: 11  
+Kelompok: Dekat.in  
 Anggota:  
 1\) Hafidz Rizqullah Prasetya 24/535493/SV/24243  
 2\) Pralambang Bhayangkara Yhudanto 24/536223/SV/24414  
@@ -126,4 +126,4 @@ Anggota:
 - Keseluruhan proposisi nilai, saluran komunitas, dan segmen pelanggan terintegrasi secara koheren ke dalam 9 blok BMC sebagai cetak biru model bisnis berkelanjutan.
 
 **6\. Kesimpulan**  
-Validasi lapangan dan pemetaan VPC/BMC memperjelas arah startup Kelompok 11: bukan membangun marketplace raksasa penyaing Shopee/GoFood, melainkan instrumen penemuan lokal (discovery tool) yang memberdayakan ekonomi tetangga secara efisien dan berkelanjutan.  
+Validasi lapangan dan pemetaan VPC/BMC memperjelas arah startup Kelompok Dekat.in: bukan membangun marketplace raksasa penyaing Shopee/GoFood, melainkan instrumen penemuan lokal (discovery tool) yang memberdayakan ekonomi tetangga secara efisien dan berkelanjutan.  
