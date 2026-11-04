@@ -307,51 +307,47 @@ Untuk memantau kesehatan produk pada fase rilis awal, ditetapkan metrik operasio
 
 Berdasarkan penelaahan komprehensif terhadap dokumen 02, 03, 04, dan 05, ditemukan sejumlah kontradiksi, celah logika, dan inkonsistensi yang perlu diselesaikan oleh tim:
 
-1. **Kesalahan Penomoran Kelompok (03 vs 02/04/05):**
-   * Pada dokumen `03-customer-discovery.md` Bagian 11 (Kesimpulan), tertulis kalimat: *"secara fundamental mengubah arah strategi kelompok 12"*.
-   * Padahal pada header dokumen 02, 03, 04, 05 dan kesimpulan dokumen 04, kelompok yang bersangkutan secara konsisten adalah **Kelompok 11**.
-
-2. **Inkonsistensi Batasan Radius Hyperlocal:**
+1. **Inkonsistensi Batasan Radius Hyperlocal:**
    * Di `02-creative-thinking.md` Solusi A1, cakupan wilayah masih menggunakan skala luas "per kota/kecamatan".
    * Di `03-customer-discovery.md`, Bagian 8 & 11 menyebut "<5 km" dan Responden 1 menyebut "maksimal 5KM", namun di Bagian 9 menyebut "radius terdekat (misal <3KM)", dan Responden 5 menyebut "radius 2 km".
    * Di `04-vpc-bmc.md`, Bagian 1.1 menyebut "<3-5 KM", Value Proposition Statement menyebut tegas "radius 5 KM", dan BMC Blok 2 menyebut "<5 KM".
    * Di `05-mvp.md`, judul fitur dan MoSCoW menuliskan "<3–5 KM".
    * *Masalah Terbuka:* Belum ada ketetapan angka pasti apakah batas radius default sistem adalah 3 KM atau 5 KM, atau apakah pengguna diberikan kontrol filter geser (misal: pilihan 1 KM, 3 KM, 5 KM) (usulan).
 
-3. **Duplikasi Butir Fitur pada Kategori SHOULD HAVE (05-mvp.md):**
+2. **Duplikasi Butir Fitur pada Kategori SHOULD HAVE (05-mvp.md):**
    * Pada tabel MoSCoW kuadran SHOULD HAVE dokumen 05-mvp.md, tercantum dua butir yang identik:
      * Butir 2: *"Tautan Titik Penjemputan ke Google Maps"*
      * Butir 3: *"Tautan statis buka maps"*
    * Kedua butir ini jelas merupakan duplikasi penulisan untuk fungsi yang sama.
 
-4. **Kontradiksi Konsep "Terverifikasi/Terkurasi" vs "Tanpa Verifikasi Rumit":**
+3. **Kontradiksi Konsep "Terverifikasi/Terkurasi" vs "Tanpa Verifikasi Rumit":**
    * Di dokumen `04-vpc-bmc.md` blok *Key Resources* dan *Key Activities*, tertulis: *"Basis data profil pedagang dan katalog produk lokal yang terverifikasi"* serta *"Kurasi, verifikasi keaslian, dan pembaruan data produk UMKM lokal"*.
    * Sebaliknya, di dokumen `05-mvp.md` (Alur Penjual) dan dokumen 04 (*Value Map*), ditekankan bahwa produk *"langsung tayang di katalog lokal tanpa verifikasi rumit"* dan *"tanpa sistem registrasi rumit"*.
    * *Masalah Terbuka:* Mekanisme "langsung tayang tanpa verifikasi" sangat rentan disalahgunakan untuk spam, nomor WhatsApp fiktif, produk ilegal/tidak pantas, atau penipuan harga. Belum ada mekanisme kurasi moderasi pasca-tayang yang dirumuskan untuk mengatasi risiko ini.
 
-5. **Ketiadaan Mekanisme Manajemen Produk Penjual (Edit & Hapus Produk):**
+4. **Ketiadaan Mekanisme Manajemen Produk Penjual (Edit & Hapus Produk):**
    * MVP menetapkan prinsip "tanpa pembuatan akun dan tanpa dasbor".
    * *Masalah Terbuka:* Jika penjual tidak memiliki akun atau sesi login, bagaimana cara penjual mengubah harga, memperbarui foto, menandai produk sedang habis, atau menghapus produk yang sudah tidak dijual? Jika harus mengunggah ulang, hal ini akan memicu duplikasi data produk usang di etalase pembeli.
 
-6. **Ketiadaan Input Lokasi Penjual pada Alur Formulir Unggah MVP:**
+5. **Ketiadaan Input Lokasi Penjual pada Alur Formulir Unggah MVP:**
    * Fitur 1 (Pendeteksi Lokasi & Filter Radius) menuntut penghitungan jarak fisik matematis antara pembeli dan penjual (<3–5 KM).
    * Namun pada dokumen `05-mvp.md` Bagian 6 (Alur Pengguna Sisi Penjual), field yang wajib diisi penjual hanya tercatat: *"nama usaha, foto produk, nama produk, harga, nomor WhatsApp, dan pilihan metode pemenuhan"*. Tidak ada field untuk memasukkan alamat, koordinat GPS, atau kelurahan penjual.
    * Tanpa data titik lokasi penjual, sistem tidak akan pernah bisa menghitung jarak atau memfilter radius produk bagi pembeli. Field koordinat/kelurahan penjual mutlak harus ditambahkan ke formulir (usulan).
 
-7. **Ketiadaan Input Deskripsi Produk pada Alur Pengguna Penjual:**
+6. **Ketiadaan Input Deskripsi Produk pada Alur Pengguna Penjual:**
    * Pada dokumen `05-mvp.md` Fitur 2 (Katalog Produk Sederhana), deskripsi fitur mencakup *"Foto, Nama, Harga, Deskripsi Singkat"*.
    * Namun pada Alur Pengguna Penjual (Bagian 6 di 05-mvp.md), butir "deskripsi singkat" tidak dicantumkan dalam daftar isian formulir penjual.
 
-8. **Inkonsistensi Logika pada Tabel Litmus Test (05-mvp.md):**
+7. **Inkonsistensi Logika pada Tabel Litmus Test (05-mvp.md):**
    * Pada tabel evaluasi Litmus Test (baris 54) untuk Fitur 5 (*Penanda Opsi Self-Pickup / Antar Mandiri*), pertanyaan uji *"Tanpa fitur ini, apakah masalah utama pengguna masih selesai?"* dijawab dengan nilai **"MASIH BISA"**.
    * Berdasarkan kaidah Litmus Test, fitur yang dijawab "MASIH BISA" secara metodologis diklasifikasikan sebagai fitur tambahan yang dapat ditunda (non-MVP, sebagaimana fitur 6–10). Namun pada kolom keputusan, fitur ini tetap dipaksakan berstatus **"FITUR INTI (MVP)"**.
 
-9. **Anomali Penggabungan Responden Wawancara pada Dokumen 03:**
+8. **Anomali Penggabungan Responden Wawancara pada Dokumen 03:**
    * Pada tabel ringkasan wawancara dokumen `03-customer-discovery.md` baris 36, data Responden 9 (Bu Sri, 52 tahun) dan Responden 10 (Arif, 24 tahun) tergabung dalam satu baris sel tabel markdown tanpa pemisah baris tabel yang benar, sehingga data profil dan kutipan Arif terselip di ujung teks Bu Sri.
 
-10. **Tantangan Operasional Fitur Promosi Berbayar (Featured Listing) Tanpa Akun:**
+9. **Tantangan Operasional Fitur Promosi Berbayar (Featured Listing) Tanpa Akun:**
     * Di dokumen `04-vpc-bmc.md` (Revenue Streams) dan `05-mvp.md` (Roadmap Fase 4), terdapat rencana monetisasi *Featured Listing* seharga Rp10.000/minggu.
     * Karena platform tidak memiliki akun penjual dan tidak memiliki payment gateway terintegrasi, proses pembayaran, verifikasi transfer manual, serta aktivasi status promosi berbayar berpotensi menimbulkan beban operasional manual yang sangat tinggi bagi pengelola.
 
-11. **Ketiadaan Visibilitas Konversi Transaksi Nyata:**
+10. **Ketiadaan Visibilitas Konversi Transaksi Nyata:**
     * Karena platform hanya bertindak sebagai discovery tool dan mengalihkan pembeli ke WhatsApp, Dekat.in tidak memiliki data pencatatan apakah pesanan yang dikirimkan via WhatsApp berakhir dengan transaksi jual-beli nyata, dibatalkan, atau tidak direspons oleh penjual. Metrik yang dapat dipantau sistem murni sebatas klik tombol pesan (*click-through rate*).
